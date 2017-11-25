@@ -1,0 +1,7 @@
+{
+    "paths": {
+        "addons": "Addon",
+        "interfaces": "Interfaces",
+        "dependency": "Dependency"
+    }
+}
