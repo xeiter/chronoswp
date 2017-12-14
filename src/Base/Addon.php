@@ -292,7 +292,7 @@ class Addon
 			$this->enqueueScriptAssets();
 
 			$controllerClassName = '\\ChronosWP\\Addon\\' . $addon . '\\' . self::prepareControllerClassName($addon);
-			$controller          = new $controllerClassName($addon, $element);
+			$controller = new $controllerClassName($addon, $element);
 			$controller->setDirectory($this->getDirectory());
 
 			return $controller->renderView($element);

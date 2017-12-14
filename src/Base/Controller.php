@@ -66,8 +66,11 @@ class Controller
 		$runMethod = 'run' . str_replace(' ', '', ucwords(str_replace('-', ' ', $element)));
 		$runMethod = str_replace('Default', '', $runMethod);
 
-		self::run($element);
-		$this->$runMethod($element);
+		// Run controller method if it exists
+		if (method_exists(get_called_class(), $runMethod)) {
+			self::run($element);
+			$this->$runMethod($element);
+		}
 	}
 
 	/**
@@ -98,10 +101,9 @@ class Controller
 	 */
 	public function renderView($element)
 	{
-		if ($this->renderView) {
+		if ($this->view && $this->renderView) {
 			return $this->view->render($this->addon, $element);
 		}
-
 		return null;
 	}
 
@@ -206,8 +208,10 @@ class Controller
 	public function setDirectory($directory)
 	{
 		$this->directory = $directory;
-		$this->view->setDirectory($directory);
-		$this->view->setCoreDirectory($this->baseDirectory);
+		if ($this->view) {
+			$this->view->setDirectory($directory);
+			$this->view->setCoreDirectory($this->baseDirectory);
+		}
 	}
 
 	/**
