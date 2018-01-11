@@ -54,6 +54,13 @@ class Controller
 	 */
 	private $coreDirectory = null;
 
+	/**
+	 * View file name suffix
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private $viewFilenameSuffix = '.php';
 
 	/**
 	 * Controller constructor.
@@ -102,6 +109,7 @@ class Controller
 	public function renderView($element)
 	{
 		if ($this->view && $this->renderView) {
+			$this->view->setFilenameSuffix($this->viewFilenameSuffix);
 			return $this->view->render($this->addon, $element);
 		}
 		return null;
@@ -235,6 +243,17 @@ class Controller
 	public function setCoreDirectory($coreDirectory)
 	{
 		$this->coreDirectory = $coreDirectory;
+	}
+
+	/**
+ * Set view filename suffix
+ *
+ * @param string $viewFilenameSuffix
+ * @access public
+ */
+	public function setViewFilenameSuffix($viewFilenameSuffix)
+	{
+		$this->viewFilenameSuffix = $viewFilenameSuffix;
 	}
 
 }

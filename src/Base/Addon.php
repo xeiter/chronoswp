@@ -119,6 +119,14 @@ class Addon
 	protected $scriptAssets = [];
 
 	/**
+	 * View file name suffix
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private $viewFilenameSuffix = '.php';
+
+	/**
 	 * Class constructor
 	 */
 	public function __construct($directory)
@@ -294,6 +302,7 @@ class Addon
 			$controllerClassName = '\\ChronosWP\\Addon\\' . $addon . '\\' . self::prepareControllerClassName($addon);
 			$controller = new $controllerClassName($addon, $element);
 			$controller->setDirectory($this->getDirectory());
+			$controller->setViewFilenameSuffix($this->viewFilenameSuffix);
 
 			return $controller->renderView($element);
 		}
@@ -663,6 +672,17 @@ class Addon
 
 		return $validationResult;
 
+	}
+
+	/**
+	 * Set view filename suffix
+	 *
+	 * @param string $viewFilenameSuffix
+	 * @access public
+	 */
+	public function setViewFilenameSuffix($viewFilenameSuffix)
+	{
+		$this->viewFilenameSuffix = $viewFilenameSuffix;
 	}
 
 }

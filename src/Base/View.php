@@ -62,13 +62,23 @@ class View
 	private $arguments = [];
 
 	/**
+	 * View file name suffix
+	 *
+	 * @var string
+	 * @access private
+	 */
+	private $filenameSuffix = '.php';
+
+	/**
 	 * View constructor.
 	 *
 	 * @param string $template
+	 * @param array $arguments
+	 * @param string $filenameSuffix
+	 * @access public
 	 */
-	public function __construct($template, $arguments = [])
+	public function __construct($template, $arguments = [], $filenameSuffix = '.php')
 	{
-
 		// Set default template
 		$this->template = self::CHRONOSWP_TEMPLATE_DIR . $this->camelCaseToDashed($template);
 
@@ -78,6 +88,8 @@ class View
 		// Save the arguments
 		$this->arguments = $arguments;
 
+		// Save filename suffix
+		$this->filenameSuffix = $filenameSuffix;
 	}
 
 	/**
@@ -87,9 +99,7 @@ class View
 	 */
 	public function setTemplate($template)
 	{
-
 		$this->template = $template;
-
 	}
 
 	/**
@@ -97,9 +107,7 @@ class View
 	 */
 	public function getTemplate()
 	{
-
 		return $this->template;
-
 	}
 
 	/**
@@ -186,9 +194,9 @@ MULTI;
 		$directory = $base ? $this->coreDirectory . '/Addon/' . $this->element : $this->directory;
 
 		if (empty($element)) {
-			$viewFileName = $directory . '/' . $this->template . '.php';
+			$viewFileName = $directory . '/' . $this->template . $this->filenameSuffix;
 		} else {
-			$viewFileName = $directory . '/' . $this->template . '-' . $element . '.php';
+			$viewFileName = $directory . '/' . $this->template . '-' . $element . $this->filenameSuffix;
 		}
 
 		return $viewFileName;
@@ -208,7 +216,7 @@ MULTI;
 	{
 		if ($this->template && ! preg_match('/-empty$/', $this->template)) {
 
-			$viewFileName     = $this->getViewFilename($element, false);
+			$viewFileName = $this->getViewFilename($element, false);
 			$viewFileNameCore = $this->getViewFilename($element);
 
 			if (file_exists($viewFileName)) {
@@ -221,12 +229,14 @@ MULTI;
 
 			if ($viewFileName) {
 
+				$data = [];
 				ob_start();
 
 				echo $this->renderVariablesHint();
 
 				foreach ($this->variables as $variableName => $variableOptions) {
 					${$variableName} = $variableOptions['value'];
+					$data[$variableName] = $variableOptions['value'];
 				}
 
 				/*foreach ( $this->arguments as $variable_name => $variable_value ) {
@@ -240,7 +250,11 @@ MULTI;
 					echo '<' . $container . ' class="' . $class . ' ' . $bottom_margin . '">';
 				}*/
 
-				require $viewFileName;
+				if (function_exists('\App\sage')) {
+					echo \App\template($viewFileName, $data);
+				} else {
+					require $viewFileName;
+				}
 
 				/*if ( ! is_null( $container ) ) {
 					echo '</' . $container . '>';
@@ -380,6 +394,17 @@ MULTI;
 	public function setCoreDirectory($directory)
 	{
 		$this->coreDirectory = $directory;
+	}
+
+	/**
+	 * Set filename suffix
+	 *
+	 * @param string $filenameSuffix
+	 * @access public
+	 */
+	public function setFilenameSuffix($filenameSuffix)
+	{
+		$this->filenameSuffix = $filenameSuffix;
 	}
 
 }
